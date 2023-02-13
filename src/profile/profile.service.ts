@@ -1,8 +1,8 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {ProfileEntity} from "./models/profile.entity";
-import {Repository} from "typeorm";
-import {from, Observable} from "rxjs";
+import {Repository, SelectQueryBuilder} from "typeorm";
+import {from, Observable, ObservedValueOf} from "rxjs";
 import {ProfileModel} from "./models/profile.model";
 import {Filter} from "../filter/filter";
 
@@ -14,12 +14,17 @@ export class ProfileService {
     ) {
     }
 
-    findAll(filter: Filter): Observable<ProfileModel[]> {
+    findAll(filter: Filter): Observable<ObservedValueOf<Promise<[ProfileEntity[], number]>>> {
         let query = (this.profileRepository.createQueryBuilder("profiles")
             .take(filter.limit)
             .skip(filter.limit * filter.pageNumber));
 
+        this.fillFilter(query, filter)
 
+        return from(query.getManyAndCount());
+    }
+
+    fillFilter(query: SelectQueryBuilder<ProfileEntity>, filter) {
         if (filter.name && filter.name !== "") {
             query.andWhere("LOWER(name) like :name", {name: `%${filter.name.toLowerCase()}%`})
         }
@@ -42,8 +47,6 @@ export class ProfileService {
         if (filter.gender && filter.gender !== "") {
             query.andWhere("gender = :gender", {gender: `${filter.gender}`})
         }
-
-        return from(query.getMany());
     }
 
     findById(id: number): Observable<ProfileModel> {
