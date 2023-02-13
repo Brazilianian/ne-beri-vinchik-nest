@@ -5,18 +5,12 @@ import {Cities} from "../city/cities";
 @Injectable()
 export class FilterService {
     getGenders() {
-        let genders = new Map();
-        for (let key in Genders) {
-            genders.set(key, genders[key]);
-        }
-        return genders;
+        return Object.keys(Genders)
+            .map(key => ({ key: key, name: Genders[key] }))
     }
 
     getCities() {
-        let cities = new Map();
-        for (let key in Cities) {
-            cities.set(key, cities[key]);
-        }
-        return cities;
+        return Object.keys(Cities)
+            .map(key => ({ key: key, name: Cities[key] }))
     }
 }

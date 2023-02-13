@@ -7,12 +7,12 @@ export class FilterController {
     }
 
     @Get("/cities")
-    getCities(): Map<string, string> {
-        return this.filterService.getCities();
+    getCities(){
+        return this.filterService.getCities()
     }
 
     @Get("/genders")
-    getGenders(): Map<string, string> {
+    getGenders() {
         return this.filterService.getGenders();
     }
 }

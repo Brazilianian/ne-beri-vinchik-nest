@@ -37,18 +37,18 @@ export class ProfileService {
             })
         }
         if (filter.city && filter.city !== "") {
-            query.andWhere("city_were_found == :city", {city: `${filter.city}`})
+            query.andWhere("city_were_found = :city", {city: `${filter.city}`})
         }
         if (filter.gender && filter.gender !== "") {
-            query.andWhere("gender == :city", {gender: `${filter.gender}`})
+            query.andWhere("gender = :gender", {gender: `${filter.gender}`})
         }
 
         return from(query.getMany());
     }
 
     findById(id: number): Observable<ProfileModel> {
-        return from(this.profileRepository.createQueryBuilder("prorfiles")
-            .where("id == :id", {id: id})
+        return from(this.profileRepository.createQueryBuilder("profiles")
+            .andWhere("id = :id", {id: `${id}`})
             .getOne())
     }
 }

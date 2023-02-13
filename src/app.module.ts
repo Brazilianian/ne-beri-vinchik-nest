@@ -3,6 +3,7 @@ import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import * as process from "process";
 import {ProfileModule} from "./profile/profile.module";
+import {FilterModule} from "./filter/filter.module";
 
 @Module({
     imports: [
@@ -17,7 +18,8 @@ import {ProfileModule} from "./profile/profile.module";
             autoLoadEntities: true,
             synchronize: true
         }),
-        ProfileModule
+        ProfileModule,
+        FilterModule
     ],
 })
 export class AppModule {
