@@ -18,4 +18,9 @@ export class ProfileController {
     getProfileById(@Param('id') id: number): ProfileModule {
         return this.profilesService.findById(id);
     }
+
+    @Get("/test")
+    test(): string {
+        return "test"
+    }
 }
