@@ -11,4 +11,5 @@ export interface ProfileModel {
     tgLink?: string;
     instLink?: string;
     date?: Timestamp;
+    last_modified?: Timestamp;
 }
