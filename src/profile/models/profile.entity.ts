@@ -35,4 +35,7 @@ export class ProfileEntity {
 
     @Column({type: 'timestamp', default: Timestamp})
     date: Timestamp;
+
+    @Column({type: 'timestamp', default: Timestamp})
+    last_modified: Timestamp;
 }
