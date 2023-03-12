@@ -1,5 +1,3 @@
-import {Timestamp} from "typeorm";
-
 export interface ProfileModel {
     id?: number;
     name?: string;
@@ -10,6 +8,6 @@ export interface ProfileModel {
     gender?: string;
     tgLink?: string;
     instLink?: string;
-    date?: Timestamp;
-    last_modified?: Timestamp;
+    date?: Date;
+    last_modified?: Date;
 }

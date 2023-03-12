@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 const port = 3000
-
+let app;
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("/api/v1")
   app.enableCors({
     origin: '*'
@@ -12,5 +12,5 @@ async function bootstrap() {
   await app.listen(port);
 }
 bootstrap().then(() => {
-  console.log(`Server started on port ${port}`)
+  console.log(`Server started on address ${port}`)
 });

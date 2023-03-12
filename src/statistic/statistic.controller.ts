@@ -1,16 +1,21 @@
-import {Controller, Get, Post} from "@nestjs/common";
+import {Controller, Get} from "@nestjs/common";
 import {StatisticService} from "./statistic.service";
-import {Statistic} from "./statistic";
+import {Observable} from "rxjs";
 
 @Controller()
 export class StatisticController {
     constructor(
-        private readonly statisticService :StatisticService
+        private readonly statisticService: StatisticService
     ) {
     }
 
     @Get('/statistic')
-    getStatistic(): Array<Statistic> {
+    getStatistic(): Observable<any> {
         return this.statisticService.getStatistics();
     }
+
+    // @Post("/statistic")
+    // updateStatistic(): void {
+    //     this.statisticService.statisticScheduler();
+    // }
 }

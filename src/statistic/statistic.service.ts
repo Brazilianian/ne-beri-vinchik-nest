@@ -5,30 +5,42 @@ import {Cities} from "../city/cities";
 import {StatisticCity} from "./city/city.statistic";
 import {StatisticAge} from "./age/age.statistic";
 import {StatisticMapper} from "./statistic.mapper";
-import * as fs from "fs";
 import {Cron} from "@nestjs/schedule";
+import {StatisticEntity} from "./statistic.entity";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {from, Observable} from "rxjs";
 
 @Injectable()
 export class StatisticService {
     constructor(
         private readonly statisticGrabber: StatisticGrabber,
-        private readonly statisticMapper: StatisticMapper
+        private readonly statisticMapper: StatisticMapper,
+        @InjectRepository(StatisticEntity)
+        private readonly statisticRepository: Repository<StatisticEntity>,
     ) {
     }
 
-    @Cron('0 0 0 * * *')
+    static isSearching: boolean = false;
+
+    static counter: number = 0;
+
+    @Cron("0 0 */12 * * *")
     statisticScheduler() {
-        this.generateDailyStatistic()
-            .then(statistic => {
-                let json = JSON.stringify(statistic);
-                fs.writeFile(`./statistics/${statistic.date.toDateString()}.json`, json,{encoding: 'utf-8'}, (err) => {
-                    if (err) {
-                        console.log(err)
-                    } else {
-                        console.log('Statistic has been written')
-                    }
-                });
-            })
+        if (!StatisticService.isSearching) {
+            StatisticService.isSearching = true;
+            this.generateDailyStatistic()
+                .then(statistic => {
+                    let statisticEntity: StatisticEntity = this.statisticMapper.fromModelToEntity(statistic);
+                    this.statisticRepository.save(statisticEntity)
+                        .then(() => {
+                            console.log("Statistic was written")
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                })
+        }
     }
 
     async generateDailyStatistic(): Promise<Statistic> {
@@ -92,19 +104,18 @@ export class StatisticService {
             statistic.statisticCities.push(statisticCity);
         }
 
+        console.log(statistic)
+
         return statistic;
     }
 
-    getStatistics(): Array<Statistic> {
-        let statistics: Statistic[] = []
-        let files = fs.readdirSync('./statistics/')
-        for (let i = 0; i < files.length; i++) {
-            let file: string = files[i];
-            let json = fs.readFileSync(`./statistics/${file}`, {encoding: 'utf-8'})
-            let statistic: Statistic = JSON.parse(json)
-            statistics.push(statistic)
-        }
-        return statistics
+    getStatistics(): Observable<any> {
+        let query = this.statisticRepository.createQueryBuilder('statistic');
+        query
+            .select()
+            .leftJoinAndSelect('statistic.statisticCities', 'statistic_city')
+            .leftJoinAndSelect('statistic_city.statisticAges', 'statistic_age')
+        return from(query.getMany());
     }
 }
 

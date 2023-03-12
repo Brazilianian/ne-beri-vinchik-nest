@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 
 import { ProfileEntity } from "./models/profile.entity";
 import {ConfigModule} from "@nestjs/config";
+import {ProfileResolver} from "./profile.resolver";
 
 @Module({
     imports: [
@@ -12,7 +13,7 @@ import {ConfigModule} from "@nestjs/config";
         TypeOrmModule.forFeature([ProfileEntity])
     ],
     controllers: [ProfileController],
-    providers: [ProfileService]
+    providers: [ProfileService, ProfileResolver]
 })
 
 export class ProfileModule {}

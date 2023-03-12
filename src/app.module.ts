@@ -6,11 +6,17 @@ import {ProfileModule} from "./profile/profile.module";
 import {FilterModule} from "./filter/filter.module";
 import {StatisticModule} from "./statistic/statistic.module";
 import {ScheduleModule} from "@nestjs/schedule";
+import {GraphQLModule} from "@nestjs/graphql";
+import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
 
 @Module({
     imports: [
         ConfigModule.forRoot({isGlobal: true}),
         ScheduleModule.forRoot(),
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            driver: ApolloDriver,
+            autoSchemaFile: true,
+        }),
         TypeOrmModule.forRoot({
             type: 'postgres',
             host: process.env.DB_HOST,
