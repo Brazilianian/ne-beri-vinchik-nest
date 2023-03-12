@@ -104,8 +104,6 @@ export class StatisticService {
             statistic.statisticCities.push(statisticCity);
         }
 
-        console.log(statistic)
-
         return statistic;
     }
 
@@ -115,6 +113,7 @@ export class StatisticService {
             .select()
             .leftJoinAndSelect('statistic.statisticCities', 'statistic_city')
             .leftJoinAndSelect('statistic_city.statisticAges', 'statistic_age')
+            .orderBy('statistic.date', 'ASC')
         return from(query.getMany());
     }
 }
