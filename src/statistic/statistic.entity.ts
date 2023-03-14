@@ -1,4 +1,4 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn, Timestamp} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {StatisticCityEntity} from "./city/city.statistic.entity";
 import {Field, ID, ObjectType} from "@nestjs/graphql";
 
@@ -10,7 +10,7 @@ export class StatisticEntity {
     id: number;
 
     @Field()
-    @Column({type: 'timestamp', default: Timestamp})
+    @Column({type: 'date', default: new Date()})
     date: Date;
 
     @Field()

@@ -23,24 +23,40 @@ export class StatisticService {
 
     static isSearching: boolean = false;
 
-    static counter: number = 0;
-
     @Cron("0 0 */12 * * *")
     statisticScheduler() {
         if (!StatisticService.isSearching) {
             StatisticService.isSearching = true;
-            this.generateDailyStatistic()
-                .then(statistic => {
-                    let statisticEntity: StatisticEntity = this.statisticMapper.fromModelToEntity(statistic);
-                    this.statisticRepository.save(statisticEntity)
-                        .then(() => {
-                            console.log("Statistic was written")
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                        })
+            this.todayStatisticWasWritten()
+                .then(wasWritten => {
+                    if (!wasWritten) {
+                        this.generateDailyStatistic()
+                            .then(statistic => {
+                                let statisticEntity: StatisticEntity = this.statisticMapper.fromModelToEntity(statistic);
+                                this.statisticRepository.save(statisticEntity)
+                                    .then(() => {
+                                        console.log("Statistic was written")
+                                    })
+                                    .catch((err) => {
+                                        console.log(err)
+                                    })
+                                StatisticService.isSearching = false
+                            })
+                    }
                 })
+                .catch(err => {
+                    console.log(err)
+                })
+
         }
+    }
+
+    async todayStatisticWasWritten(): Promise<Boolean> {
+        let query = this.statisticRepository.createQueryBuilder('statistic');
+        return await query
+            .select()
+            .where('date = CURRENT_DATE')
+            .getExists()
     }
 
     async generateDailyStatistic(): Promise<Statistic> {
