@@ -23,7 +23,7 @@ export class StatisticService {
 
     static isSearching: boolean = false;
 
-    @Cron("0 0 */12 * * *")
+    @Cron("0 1 * * *")
     statisticScheduler() {
         if (!StatisticService.isSearching) {
             StatisticService.isSearching = true;
