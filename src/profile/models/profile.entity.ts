@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn, Timestamp} from "typeorm";
+import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 import {Field, ID, ObjectType} from "@nestjs/graphql";
 
 @ObjectType()
@@ -52,10 +52,10 @@ export class ProfileEntity {
     instLink: string;
 
     @Field()
-    @Column({type: 'timestamp', default: Timestamp})
+    @Column({type: 'date', default: new Date()})
     date: Date;
 
     @Field()
-    @Column({type: 'timestamp', default: Timestamp})
+    @Column({type: 'date', default: new Date()})
     last_modified: Date;
 }
